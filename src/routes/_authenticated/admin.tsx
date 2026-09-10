@@ -175,7 +175,7 @@ function SubmissionsTab() {
         </div>
         <NeoButton
           size="sm"
-          tone="secondary"
+          tone="neutral"
           onClick={() => setSelected(selected.length === allIds.length ? [] : allIds)}
         >
           {selected.length === allIds.length && allIds.length > 0 ? "Batal Pilih" : "Pilih Semua"}
@@ -303,7 +303,7 @@ function WithdrawalsTab() {
             <div className="mt-3 flex flex-wrap gap-2">
               <NeoButton
                 size="sm"
-                tone="secondary"
+                tone="neutral"
                 disabled={act.isPending}
                 onClick={() => act.mutate({ id: w.id, action: "APPROVE" })}
               >
@@ -382,7 +382,7 @@ function UsersTab() {
           <div className="mt-3 flex flex-wrap gap-2">
             <NeoButton
               size="sm"
-              tone={u.suspended ? "secondary" : "danger"}
+              tone={u.suspended ? "neutral" : "danger"}
               disabled={update.isPending}
               onClick={() => update.mutate({ id: u.id, suspended: !u.suspended })}
             >
@@ -390,7 +390,7 @@ function UsersTab() {
             </NeoButton>
             <NeoButton
               size="sm"
-              tone="secondary"
+              tone="neutral"
               disabled={update.isPending}
               onClick={() => {
                 const raw = window.prompt("Penyesuaian saldo (boleh minus), contoh 5000:");
