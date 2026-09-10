@@ -61,22 +61,26 @@ export const submitAccounts = createServerFn({ method: "POST" })
       parsed.push({ ref });
     }
 
-    // Daily quota (UTC day boundary)
-    const dayStart = new Date();
-    dayStart.setUTCHours(0, 0, 0, 0);
-    const { count } = await supabase
-      .from("submissions")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", userId)
-      .gte("created_at", dayStart.toISOString());
+    // Daily quota (UTC day boundary) — bisa dinonaktifkan admin
+    let remaining = parsed.length;
+    if (settings.daily_quota_enabled) {
+      const dayStart = new Date();
+      dayStart.setUTCHours(0, 0, 0, 0);
+      const { count } = await supabase
+        .from("submissions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .gte("created_at", dayStart.toISOString());
 
-    const used = count ?? 0;
-    const remaining = Math.max(0, settings.daily_quota - used);
-    if (remaining === 0 && parsed.length > 0)
-      throw new Error("Kuota harian Anda sudah habis.");
+      const used = count ?? 0;
+      remaining = Math.max(0, settings.daily_quota - used);
+      if (remaining === 0 && parsed.length > 0)
+        throw new Error("Kuota harian Anda sudah habis.");
+    }
 
     const allowed = parsed.slice(0, remaining);
     const skippedQuota = parsed.slice(remaining).map((p) => p.ref);
+
 
     // Duplicate check against existing records
     const duplicates: string[] = [];
