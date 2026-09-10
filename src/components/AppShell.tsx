@@ -16,6 +16,8 @@ import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getBootstrap } from "@/lib/account.functions";
 import { NeoBadge } from "@/components/neo";
+import { AnnouncementDialog } from "@/components/AnnouncementDialog";
+
 
 export const bootstrapQuery = {
   queryKey: ["bootstrap"],
