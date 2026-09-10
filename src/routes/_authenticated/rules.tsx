@@ -120,19 +120,8 @@ function Page() {
         </NeoCard>
       </div>
 
-      <NeoCard>
-        <div className="flex items-center justify-between">
-          <h2 className="neo-heading text-lg">Format Bulk Gmail</h2>
-          <NeoBadge tone="info">Contoh</NeoBadge>
-        </div>
-        <p className="mt-2 text-sm font-medium text-muted-foreground">
-          Tulis satu alamat Gmail per baris seperti contoh di bawah, lalu isi kolom password
-          setoran sesuai rules hari ini.
-        </p>
-        <pre className="mt-3 overflow-x-auto rounded-md border-[3px] border-ink bg-secondary p-3 text-xs font-semibold leading-6">
-          {SAMPLE}
-        </pre>
-      </NeoCard>
+
+
 
       <div className="grid gap-4 lg:grid-cols-2">
         <NeoCard>
