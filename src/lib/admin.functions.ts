@@ -325,11 +325,16 @@ export const adminListTickets = createServerFn({ method: "GET" })
     const db = await admin();
     const { data } = await db
       .from("support_tickets")
-      .select("*, profiles!inner(username), support_messages(*)")
+      .select("*, support_messages(*)")
       .order("updated_at", { ascending: false })
       .limit(100);
-    return data ?? [];
+    const names = await usernameMap(db, (data ?? []).map((t) => t.user_id));
+    return (data ?? []).map((t) => ({
+      ...t,
+      profiles: { username: names.get(t.user_id)?.username ?? "-" },
+    }));
   });
+
 
 export const adminCloseTicket = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
