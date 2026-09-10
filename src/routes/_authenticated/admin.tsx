@@ -476,12 +476,32 @@ function SettingsTab() {
           />
         </div>
         <div>
+          <NeoLabel>Batas Setor Hari Ini</NeoLabel>
+          <NeoSelect
+            value={value["daily_quota_enabled"] ? "1" : "0"}
+            onChange={(e) => set("daily_quota_enabled", e.target.value === "1")}
+          >
+            <option value="1">Aktif</option>
+            <option value="0">Nonaktif (tanpa batas)</option>
+          </NeoSelect>
+        </div>
+        <div>
           <NeoLabel>Kuota Harian</NeoLabel>
           <NeoInput
             type="number"
             value={num("daily_quota")}
             onChange={(e) => set("daily_quota", Number(e.target.value))}
           />
+        </div>
+        <div>
+          <NeoLabel>Batas Maksimal Setor Sekali Kirim</NeoLabel>
+          <NeoSelect
+            value={value["max_bulk_enabled"] ? "1" : "0"}
+            onChange={(e) => set("max_bulk_enabled", e.target.value === "1")}
+          >
+            <option value="1">Aktif</option>
+            <option value="0">Nonaktif (tanpa batas)</option>
+          </NeoSelect>
         </div>
         <div>
           <NeoLabel>Maks Baris per Setoran</NeoLabel>
@@ -491,6 +511,7 @@ function SettingsTab() {
             onChange={(e) => set("max_bulk", Number(e.target.value))}
           />
         </div>
+
         <div>
           <NeoLabel>Minimal Penarikan (Rp)</NeoLabel>
           <NeoInput
