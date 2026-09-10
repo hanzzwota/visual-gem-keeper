@@ -41,8 +41,9 @@ export const submitAccounts = createServerFn({ method: "POST" })
       .filter(Boolean);
 
     if (lines.length === 0) throw new Error("Tidak ada data setoran.");
-    if (lines.length > settings.max_bulk)
+    if (settings.max_bulk_enabled && lines.length > settings.max_bulk)
       throw new Error(`Maksimal ${settings.max_bulk} baris per setoran.`);
+
 
     const invalid: string[] = [];
     const parsed: { ref: string }[] = [];
