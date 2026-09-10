@@ -24,14 +24,6 @@ export const Route = createFileRoute("/_authenticated/rules")({
   component: Page,
 });
 
-const SAMPLE = `kdpbgitaking4598@gmail.com
-haiaikapermana4714@gmail.com
-ikmoandrewraksa3596@gmail.com
-cukksatriasulaiman7473@gmail.com
-rskbkamalgarcia2221@gmail.com
-cpsaenengjusoh7206@gmail.com
-ixcjsukesi38@gmail.com
-yhjiintan18@gmail.com`;
 
 const ALLOWED = [
   "Satu email Gmail per baris, tanpa tambahan tanda atau teks lain.",
@@ -104,14 +96,19 @@ function Page() {
           <p className="font-display text-[11px] font-bold uppercase tracking-widest opacity-70">
             Kuota Harian
           </p>
-          <p className="neo-heading mt-1 text-2xl">{s?.daily_quota ?? 0} akun</p>
+          <p className="neo-heading mt-1 text-2xl">
+            {s?.daily_quota_enabled === false ? "Tanpa batas" : `${s?.daily_quota ?? 0} akun`}
+          </p>
         </NeoCard>
         <NeoCard>
           <p className="font-display text-[11px] font-bold uppercase tracking-widest opacity-70">
             Maksimal Sekali Kirim
           </p>
-          <p className="neo-heading mt-1 text-2xl">{s?.max_bulk ?? 0} baris</p>
+          <p className="neo-heading mt-1 text-2xl">
+            {s?.max_bulk_enabled === false ? "Tanpa batas" : `${s?.max_bulk ?? 0} baris`}
+          </p>
         </NeoCard>
+
         <NeoCard>
           <p className="font-display text-[11px] font-bold uppercase tracking-widest opacity-70">
             Minimal Penarikan
@@ -120,19 +117,8 @@ function Page() {
         </NeoCard>
       </div>
 
-      <NeoCard>
-        <div className="flex items-center justify-between">
-          <h2 className="neo-heading text-lg">Format Bulk Gmail</h2>
-          <NeoBadge tone="info">Contoh</NeoBadge>
-        </div>
-        <p className="mt-2 text-sm font-medium text-muted-foreground">
-          Tulis satu alamat Gmail per baris seperti contoh di bawah, lalu isi kolom password
-          setoran sesuai rules hari ini.
-        </p>
-        <pre className="mt-3 overflow-x-auto rounded-md border-[3px] border-ink bg-secondary p-3 text-xs font-semibold leading-6">
-          {SAMPLE}
-        </pre>
-      </NeoCard>
+
+
 
       <div className="grid gap-4 lg:grid-cols-2">
         <NeoCard>

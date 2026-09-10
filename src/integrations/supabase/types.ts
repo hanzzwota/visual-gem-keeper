@@ -137,11 +137,13 @@ export type Database = {
           announcement: string
           announcement_title: string
           daily_quota: number
+          daily_quota_enabled: boolean
           dashboard_name: string
           deposit_password: string
           human_support_enabled: boolean
           id: number
           max_bulk: number
+          max_bulk_enabled: boolean
           min_withdrawal: number
           rate_per_account: number
           rules_today: string
@@ -155,11 +157,13 @@ export type Database = {
           announcement?: string
           announcement_title?: string
           daily_quota?: number
+          daily_quota_enabled?: boolean
           dashboard_name?: string
           deposit_password?: string
           human_support_enabled?: boolean
           id?: number
           max_bulk?: number
+          max_bulk_enabled?: boolean
           min_withdrawal?: number
           rate_per_account?: number
           rules_today?: string
@@ -173,11 +177,13 @@ export type Database = {
           announcement?: string
           announcement_title?: string
           daily_quota?: number
+          daily_quota_enabled?: boolean
           dashboard_name?: string
           deposit_password?: string
           human_support_enabled?: boolean
           id?: number
           max_bulk?: number
+          max_bulk_enabled?: boolean
           min_withdrawal?: number
           rate_per_account?: number
           rules_today?: string

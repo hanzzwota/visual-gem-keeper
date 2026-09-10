@@ -17,7 +17,10 @@ export type Bootstrap = {
     rate_per_account: number;
     daily_quota: number;
     max_bulk: number;
+    daily_quota_enabled: boolean;
+    max_bulk_enabled: boolean;
     min_withdrawal: number;
+
     submission_open: boolean;
     whatsapp_link: string;
     tiktok_link: string;
@@ -81,6 +84,9 @@ export const getBootstrap = createServerFn({ method: "GET" })
         rate_per_account: settings?.rate_per_account ?? 0,
         daily_quota: limit,
         max_bulk: settings?.max_bulk ?? 25,
+        daily_quota_enabled: settings?.daily_quota_enabled ?? true,
+        max_bulk_enabled: settings?.max_bulk_enabled ?? true,
+
         min_withdrawal: settings?.min_withdrawal ?? 4000,
         submission_open: settings?.submission_open ?? false,
         whatsapp_link: settings?.whatsapp_link ?? "",
