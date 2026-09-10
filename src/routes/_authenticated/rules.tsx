@@ -96,14 +96,19 @@ function Page() {
           <p className="font-display text-[11px] font-bold uppercase tracking-widest opacity-70">
             Kuota Harian
           </p>
-          <p className="neo-heading mt-1 text-2xl">{s?.daily_quota ?? 0} akun</p>
+          <p className="neo-heading mt-1 text-2xl">
+            {s?.daily_quota_enabled === false ? "Tanpa batas" : `${s?.daily_quota ?? 0} akun`}
+          </p>
         </NeoCard>
         <NeoCard>
           <p className="font-display text-[11px] font-bold uppercase tracking-widest opacity-70">
             Maksimal Sekali Kirim
           </p>
-          <p className="neo-heading mt-1 text-2xl">{s?.max_bulk ?? 0} baris</p>
+          <p className="neo-heading mt-1 text-2xl">
+            {s?.max_bulk_enabled === false ? "Tanpa batas" : `${s?.max_bulk ?? 0} baris`}
+          </p>
         </NeoCard>
+
         <NeoCard>
           <p className="font-display text-[11px] font-bold uppercase tracking-widest opacity-70">
             Minimal Penarikan
