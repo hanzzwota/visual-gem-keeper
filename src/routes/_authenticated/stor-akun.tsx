@@ -89,9 +89,16 @@ function StorAkunPage() {
             <NeoBadge tone={open ? "primary" : "danger"}>
               {open ? "Setoran Buka" : "Setoran Tutup"}
             </NeoBadge>
-            <NeoBadge tone="info">Sisa kuota: {boot?.quota.remaining ?? 0}</NeoBadge>
-            <NeoBadge>Maks {boot?.settings.max_bulk ?? 25} baris</NeoBadge>
+            {boot?.settings.daily_quota_enabled === false ? (
+              <NeoBadge tone="info">Kuota harian: tanpa batas</NeoBadge>
+            ) : (
+              <NeoBadge tone="info">Sisa kuota: {boot?.quota.remaining ?? 0}</NeoBadge>
+            )}
+            {boot?.settings.max_bulk_enabled === false ? null : (
+              <NeoBadge>Maks {boot?.settings.max_bulk ?? 25} baris</NeoBadge>
+            )}
           </div>
+
 
           <form
             onSubmit={(e) => {
