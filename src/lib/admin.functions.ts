@@ -162,11 +162,16 @@ export const adminListWithdrawals = createServerFn({ method: "GET" })
     const db = await admin();
     const { data, error } = await db
       .from("withdrawals")
-      .select("*, profiles!inner(username, whatsapp)")
+      .select("*")
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
-    return data ?? [];
+    const names = await usernameMap(db, (data ?? []).map((w) => w.user_id));
+    return (data ?? []).map((w) => ({
+      ...w,
+      profiles: names.get(w.user_id) ?? { username: "-", whatsapp: null },
+    }));
+
   });
 
 export const adminReviewWithdrawal = createServerFn({ method: "POST" })
