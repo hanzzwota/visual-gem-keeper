@@ -17,7 +17,10 @@ export type Bootstrap = {
     rate_per_account: number;
     daily_quota: number;
     max_bulk: number;
+    daily_quota_enabled: boolean;
+    max_bulk_enabled: boolean;
     min_withdrawal: number;
+
     submission_open: boolean;
     whatsapp_link: string;
     tiktok_link: string;
