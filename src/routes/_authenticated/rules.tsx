@@ -24,14 +24,6 @@ export const Route = createFileRoute("/_authenticated/rules")({
   component: Page,
 });
 
-const SAMPLE = `kdpbgitaking4598@gmail.com
-haiaikapermana4714@gmail.com
-ikmoandrewraksa3596@gmail.com
-cukksatriasulaiman7473@gmail.com
-rskbkamalgarcia2221@gmail.com
-cpsaenengjusoh7206@gmail.com
-ixcjsukesi38@gmail.com
-yhjiintan18@gmail.com`;
 
 const ALLOWED = [
   "Satu email Gmail per baris, tanpa tambahan tanda atau teks lain.",
