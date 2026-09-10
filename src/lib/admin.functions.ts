@@ -55,6 +55,15 @@ export const adminOverview = createServerFn({ method: "GET" })
     };
   });
 
+async function usernameMap(db: Awaited<ReturnType<typeof admin>>, ids: string[]) {
+  const unique = [...new Set(ids)];
+  if (unique.length === 0) return new Map<string, { username: string; whatsapp: string | null }>();
+  const { data } = await db.from("profiles").select("id, username, whatsapp").in("id", unique);
+  return new Map(
+    (data ?? []).map((p) => [p.id, { username: p.username, whatsapp: p.whatsapp }]),
+  );
+}
+
 export const adminListSubmissions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { status?: string }) => data)
@@ -63,15 +72,20 @@ export const adminListSubmissions = createServerFn({ method: "POST" })
     const db = await admin();
     let query = db
       .from("submissions")
-      .select("*, profiles!inner(username)")
+      .select("*")
       .order("created_at", { ascending: false })
       .limit(300);
     if (data.status && data.status !== "ALL")
       query = query.eq("status", data.status as Enums<"submission_status">);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return rows ?? [];
+    const names = await usernameMap(db, (rows ?? []).map((r) => r.user_id));
+    return (rows ?? []).map((r) => ({
+      ...r,
+      profiles: { username: names.get(r.user_id)?.username ?? "-" },
+    }));
   });
+
 
 export const adminReviewSubmissions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
