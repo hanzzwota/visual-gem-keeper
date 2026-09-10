@@ -22,9 +22,12 @@ export const submitAccounts = createServerFn({ method: "POST" })
       supabase.from("profiles").select("suspended").eq("id", userId).maybeSingle(),
       supabase
         .from("settings")
-        .select("rate_per_account, daily_quota, max_bulk, submission_open")
+        .select(
+          "rate_per_account, daily_quota, max_bulk, submission_open, daily_quota_enabled, max_bulk_enabled",
+        )
         .eq("id", 1)
         .maybeSingle(),
+
     ]);
 
     if (profileRes.data?.suspended) throw new Error("Akun Anda sedang ditangguhkan.");
