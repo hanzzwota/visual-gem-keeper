@@ -450,6 +450,9 @@ function SettingsTab() {
             rate_per_account: num("rate_per_account"),
             daily_quota: num("daily_quota"),
             max_bulk: num("max_bulk"),
+            daily_quota_enabled: Boolean(value["daily_quota_enabled"]),
+            max_bulk_enabled: Boolean(value["max_bulk_enabled"]),
+
             min_withdrawal: num("min_withdrawal"),
             submission_open: Boolean(value["submission_open"]),
             deposit_password: text("deposit_password"),
