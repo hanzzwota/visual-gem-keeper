@@ -295,6 +295,9 @@ export const adminUpdateSettings = createServerFn({ method: "POST" })
       "rate_per_account",
       "daily_quota",
       "max_bulk",
+      "daily_quota_enabled",
+      "max_bulk_enabled",
+
       "min_withdrawal",
       "submission_open",
       "deposit_password",
