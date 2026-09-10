@@ -175,7 +175,7 @@ function SubmissionsTab() {
         </div>
         <NeoButton
           size="sm"
-          variant="secondary"
+          tone="secondary"
           onClick={() => setSelected(selected.length === allIds.length ? [] : allIds)}
         >
           {selected.length === allIds.length && allIds.length > 0 ? "Batal Pilih" : "Pilih Semua"}
@@ -201,7 +201,7 @@ function SubmissionsTab() {
           </NeoButton>
           <NeoButton
             size="sm"
-            variant="danger"
+            tone="danger"
             disabled={selected.length === 0 || review.isPending}
             onClick={() => review.mutate({ ids: selected, approve: false, note })}
           >
@@ -303,7 +303,7 @@ function WithdrawalsTab() {
             <div className="mt-3 flex flex-wrap gap-2">
               <NeoButton
                 size="sm"
-                variant="secondary"
+                tone="secondary"
                 disabled={act.isPending}
                 onClick={() => act.mutate({ id: w.id, action: "APPROVE" })}
               >
@@ -318,7 +318,7 @@ function WithdrawalsTab() {
               </NeoButton>
               <NeoButton
                 size="sm"
-                variant="danger"
+                tone="danger"
                 disabled={act.isPending}
                 onClick={() => {
                   const note = window.prompt("Alasan penolakan?") ?? "";
@@ -382,7 +382,7 @@ function UsersTab() {
           <div className="mt-3 flex flex-wrap gap-2">
             <NeoButton
               size="sm"
-              variant={u.suspended ? "secondary" : "danger"}
+              tone={u.suspended ? "secondary" : "danger"}
               disabled={update.isPending}
               onClick={() => update.mutate({ id: u.id, suspended: !u.suspended })}
             >
@@ -390,7 +390,7 @@ function UsersTab() {
             </NeoButton>
             <NeoButton
               size="sm"
-              variant="secondary"
+              tone="secondary"
               disabled={update.isPending}
               onClick={() => {
                 const raw = window.prompt("Penyesuaian saldo (boleh minus), contoh 5000:");
@@ -618,7 +618,7 @@ function TicketsTab() {
             <div className="flex items-center gap-2">
               <NeoBadge tone={t.status === "OPEN" ? "warning" : "primary"}>{t.status}</NeoBadge>
               {t.status !== "CLOSED" ? (
-                <NeoButton size="sm" variant="danger" onClick={() => close.mutate(t.id)}>
+                <NeoButton size="sm" tone="danger" onClick={() => close.mutate(t.id)}>
                   Tutup
                 </NeoButton>
               ) : null}
