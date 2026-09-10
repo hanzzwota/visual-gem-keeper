@@ -84,6 +84,9 @@ export const getBootstrap = createServerFn({ method: "GET" })
         rate_per_account: settings?.rate_per_account ?? 0,
         daily_quota: limit,
         max_bulk: settings?.max_bulk ?? 25,
+        daily_quota_enabled: settings?.daily_quota_enabled ?? true,
+        max_bulk_enabled: settings?.max_bulk_enabled ?? true,
+
         min_withdrawal: settings?.min_withdrawal ?? 4000,
         submission_open: settings?.submission_open ?? false,
         whatsapp_link: settings?.whatsapp_link ?? "",
