@@ -37,13 +37,15 @@ export function AnnouncementDialog({
             <Megaphone className="size-5" />
             <h2 className="neo-heading text-lg">{title || "PENGUMUMAN RESMI"}</h2>
           </div>
-          <button
+          <NeoButton
             onClick={() => setOpen(false)}
             aria-label="Tutup pengumuman"
-            className="neo-press rounded-md border-[3px] border-ink bg-card p-1 shadow-neo-sm"
+            tone="neutral"
+            size="sm"
+            className="size-8 p-0"
           >
             <X className="size-4" />
-          </button>
+          </NeoButton>
         </div>
 
         <p className="mt-3 whitespace-pre-line text-sm font-bold leading-relaxed">{body}</p>
