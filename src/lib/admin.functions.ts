@@ -57,10 +57,17 @@ export const adminOverview = createServerFn({ method: "GET" })
 
 async function usernameMap(db: Awaited<ReturnType<typeof admin>>, ids: string[]) {
   const unique = [...new Set(ids)];
-  if (unique.length === 0) return new Map<string, { username: string; whatsapp: string | null }>();
-  const { data } = await db.from("profiles").select("id, username, whatsapp").in("id", unique);
+  if (unique.length === 0)
+    return new Map<string, { username: string; email: string | null; whatsapp: string | null }>();
+  const { data } = await db
+    .from("profiles")
+    .select("id, username, email, whatsapp")
+    .in("id", unique);
   return new Map(
-    (data ?? []).map((p) => [p.id, { username: p.username, whatsapp: p.whatsapp }]),
+    (data ?? []).map((p) => [
+      p.id,
+      { username: p.username, email: p.email, whatsapp: p.whatsapp },
+    ]),
   );
 }
 
@@ -74,7 +81,7 @@ export const adminListSubmissions = createServerFn({ method: "POST" })
       .from("submissions")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(300);
+      .limit(1000);
     if (data.status && data.status !== "ALL")
       query = query.eq("status", data.status as Enums<"submission_status">);
     const { data: rows, error } = await query;
@@ -82,7 +89,10 @@ export const adminListSubmissions = createServerFn({ method: "POST" })
     const names = await usernameMap(db, (rows ?? []).map((r) => r.user_id));
     return (rows ?? []).map((r) => ({
       ...r,
-      profiles: { username: names.get(r.user_id)?.username ?? "-" },
+      profiles: {
+        username: names.get(r.user_id)?.username ?? "-",
+        email: names.get(r.user_id)?.email ?? null,
+      },
     }));
   });
 

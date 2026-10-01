@@ -134,6 +134,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           ) : null}
 
+          {data?.settings.announcement ? (
+            <AnnouncementDialog
+              title={data.settings.announcement_title}
+              body={data.settings.announcement}
+              rules={data.settings.rules_today}
+            />
+          ) : null}
+
           {children}
         </main>
       </div>
