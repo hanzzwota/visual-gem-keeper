@@ -316,9 +316,9 @@ function SubmissionsTab() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <NeoBadge tone="info">{userRows.length} Email</NeoBadge>
-                      {counts.PENDING ? <NeoBadge tone="warning">{counts.PENDING} Pending</NeoBadge> : null}
-                      {counts.ACCEPTED ? <NeoBadge tone="primary">{counts.ACCEPTED} Diterima</NeoBadge> : null}
-                      {counts.REJECTED ? <NeoBadge tone="danger">{counts.REJECTED} Ditolak</NeoBadge> : null}
+                      {counts["PENDING"] ? <NeoBadge tone="warning">{counts["PENDING"]} Pending</NeoBadge> : null}
+                      {counts["ACCEPTED"] ? <NeoBadge tone="primary">{counts["ACCEPTED"]} Diterima</NeoBadge> : null}
+                      {counts["REJECTED"] ? <NeoBadge tone="danger">{counts["REJECTED"]} Ditolak</NeoBadge> : null}
                     </div>
                   </div>
                   <div className="flex shrink-0 flex-col gap-1 md:items-end">
