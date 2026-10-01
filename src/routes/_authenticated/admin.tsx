@@ -3,6 +3,18 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
+  ChevronDown,
+  ChevronUp,
+  CircleDollarSign,
+  ClipboardCheck,
+  FileClock,
+  Inbox,
+  Search,
+  Settings,
+  TicketCheck,
+  Users,
+} from "lucide-react";
+import {
   NeoCard,
   NeoButton,
   NeoInput,
@@ -37,18 +49,20 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "description", content: "Panel administrasi setoran, penarikan, pengguna, dan pengaturan." },
       { property: "og:title", content: "Admin — S3L RYU88 GMAIL" },
       { property: "og:description", content: "Kelola setoran, penarikan, pengguna, tiket, dan pengaturan." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminPage,
 });
 
 const TABS = [
-  { id: "setoran", label: "Setoran" },
-  { id: "penarikan", label: "Penarikan" },
-  { id: "pengguna", label: "Pengguna" },
-  { id: "pengaturan", label: "Pengaturan" },
-  { id: "tiket", label: "Tiket" },
-  { id: "log", label: "Log" },
+  { id: "setoran", label: "Setoran", icon: Inbox },
+  { id: "penarikan", label: "Penarikan", icon: CircleDollarSign },
+  { id: "pengguna", label: "Pengguna", icon: Users },
+  { id: "pengaturan", label: "Pengaturan", icon: Settings },
+  { id: "tiket", label: "Tiket", icon: TicketCheck },
+  { id: "log", label: "Log", icon: FileClock },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -90,17 +104,18 @@ function AdminPage() {
         <Stat label="Total Dibayar" value={formatRp(o?.totalPaid ?? 0)} />
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-3 gap-2 lg:grid-cols-6">
         {TABS.map((t) => (
-          <button
+          <NeoButton
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`neo-press rounded-md border-[3px] border-ink px-3 py-1.5 font-display text-xs font-bold uppercase shadow-neo-sm ${
-              tab === t.id ? "bg-primary text-primary-foreground" : "bg-card"
-            }`}
+            tone={tab === t.id ? "primary" : "neutral"}
+            size="sm"
+            className="min-w-0 px-2"
           >
+            <t.icon className="size-4 shrink-0" />
             {t.label}
-          </button>
+          </NeoButton>
         ))}
       </div>
 
@@ -130,7 +145,10 @@ function Stat({ label, value }: { label: string; value: string | number }) {
 function SubmissionsTab() {
   const qc = useQueryClient();
   const [status, setStatus] = useState("PENDING");
+  const [searchMode, setSearchMode] = useState<"email" | "account">("email");
+  const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState<string[]>([]);
   const [note, setNote] = useState("");
 
   const list = useQuery({
@@ -159,12 +177,68 @@ function SubmissionsTab() {
   });
 
   const rows = list.data ?? [];
-  const allIds = rows.map((r) => r.id);
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredRows = rows.filter((row) => {
+    if (!normalizedQuery) return true;
+    if (searchMode === "email") return row.account_ref.toLowerCase().includes(normalizedQuery);
+    return `${row.profiles.username} ${row.profiles.email ?? ""}`
+      .toLowerCase()
+      .includes(normalizedQuery);
+  });
+  const grouped = [...filteredRows.reduce((groups, row) => {
+    const current = groups.get(row.user_id) ?? [];
+    current.push(row);
+    groups.set(row.user_id, current);
+    return groups;
+  }, new Map<string, typeof filteredRows>()).entries()];
+  const allIds = filteredRows.map((r) => r.id);
+
+  const toggleGroup = (userId: string) =>
+    setExpanded((current) =>
+      current.includes(userId) ? current.filter((id) => id !== userId) : [...current, userId],
+    );
+
+  const toggleSelection = (ids: string[]) => {
+    const fullySelected = ids.every((id) => selected.includes(id));
+    setSelected((current) =>
+      fullySelected
+        ? current.filter((id) => !ids.includes(id))
+        : [...new Set([...current, ...ids])],
+    );
+  };
 
   return (
-    <NeoCard>
-      <div className="flex flex-wrap items-end gap-2">
-        <div className="w-44">
+    <div className="space-y-4">
+      <NeoCard className="bg-secondary">
+        <div className="grid gap-3 lg:grid-cols-[180px_1fr_auto] lg:items-end">
+          <div>
+            <NeoLabel>Mode Pencarian</NeoLabel>
+            <NeoSelect value={searchMode} onChange={(e) => setSearchMode(e.target.value as "email" | "account")}>
+              <option value="email">Email Setoran</option>
+              <option value="account">Akun Pengguna</option>
+            </NeoSelect>
+          </div>
+          <div>
+            <NeoLabel>{searchMode === "email" ? "Cari Email Setoran" : "Cari Username / Email Akun"}</NeoLabel>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <NeoInput
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={searchMode === "email" ? "Ketik email yang disetor" : "Ketik username atau email akun"}
+                className="pl-10"
+              />
+            </div>
+          </div>
+          <div className="pb-1 font-display text-xs font-bold uppercase text-muted-foreground">
+            {grouped.length} Pengguna • {filteredRows.length} Email
+          </div>
+        </div>
+      </NeoCard>
+
+      <NeoCard>
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="w-44">
           <NeoLabel>Status</NeoLabel>
           <NeoSelect value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="PENDING">Pending</option>
@@ -210,43 +284,87 @@ function SubmissionsTab() {
         </div>
       </div>
 
-      <div className="mt-4 space-y-2">
-        {rows.length === 0 ? <EmptyState text="Tidak ada setoran." /> : null}
-        {rows.map((r) => {
-          const username = (r as unknown as { profiles: { username: string } }).profiles?.username;
-          const checked = selected.includes(r.id);
+      </NeoCard>
+
+      <div className="space-y-3">
+        {list.isLoading ? <NeoCard>Memuat setoran...</NeoCard> : null}
+        {!list.isLoading && grouped.length === 0 ? <EmptyState text="Setoran tidak ditemukan." /> : null}
+        {grouped.map(([userId, userRows]) => {
+          const first = userRows[0];
+          if (!first) return null;
+          const ids = userRows.map((row) => row.id);
+          const isExpanded = expanded.includes(userId);
+          const fullySelected = ids.every((id) => selected.includes(id));
+          const counts = userRows.reduce(
+            (total, row) => ({ ...total, [row.status]: (total[row.status] ?? 0) + 1 }),
+            {} as Record<string, number>,
+          );
+          const totalValue = userRows.reduce((sum, row) => sum + row.rate, 0);
           return (
-            <label
-              key={r.id}
-              className="flex cursor-pointer flex-wrap items-center gap-3 rounded-md border-[3px] border-ink bg-card px-3 py-2 shadow-neo-sm"
-            >
-              <input
-                type="checkbox"
-                checked={checked}
-                onChange={() =>
-                  setSelected((prev) =>
-                    prev.includes(r.id) ? prev.filter((i) => i !== r.id) : [...prev, r.id],
-                  )
-                }
-                className="size-4"
-              />
-              <span className="min-w-0 flex-1 break-all font-mono text-sm">{r.account_ref}</span>
-              <NeoBadge tone="info">{username}</NeoBadge>
-              <NeoBadge
-                tone={
-                  r.status === "ACCEPTED" ? "primary" : r.status === "PENDING" ? "warning" : "danger"
-                }
-              >
-                {r.status}
-              </NeoBadge>
-              <span className="text-[11px] font-bold uppercase text-muted-foreground">
-                {fmtDate(r.created_at)}
-              </span>
-            </label>
+            <NeoCard key={userId} className="overflow-hidden p-0">
+              <div className="p-4">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="grid size-10 shrink-0 place-items-center rounded-md border-[3px] border-ink bg-info font-display text-lg font-black shadow-neo-sm">
+                        {first.profiles.username.slice(0, 1).toUpperCase() || "?"}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="truncate font-display text-base font-black uppercase">{first.profiles.username}</h3>
+                        <p className="truncate text-xs font-semibold text-muted-foreground">{first.profiles.email ?? "Email akun tidak tersedia"}</p>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <NeoBadge tone="info">{userRows.length} Email</NeoBadge>
+                      {counts.PENDING ? <NeoBadge tone="warning">{counts.PENDING} Pending</NeoBadge> : null}
+                      {counts.ACCEPTED ? <NeoBadge tone="primary">{counts.ACCEPTED} Diterima</NeoBadge> : null}
+                      {counts.REJECTED ? <NeoBadge tone="danger">{counts.REJECTED} Ditolak</NeoBadge> : null}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 flex-col gap-1 md:items-end">
+                    <span className="font-display text-lg font-black">{formatRp(totalValue)}</span>
+                    <span className="text-[11px] font-bold uppercase text-muted-foreground">Terbaru {fmtDate(first.created_at)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-2 border-t-[3px] border-ink pt-3">
+                  <NeoButton size="sm" tone={fullySelected ? "warning" : "neutral"} onClick={() => toggleSelection(ids)}>
+                    <ClipboardCheck className="size-4" />
+                    {fullySelected ? "Batal Pilih" : `Pilih ${ids.length} Email`}
+                  </NeoButton>
+                  <NeoButton size="sm" tone="dark" onClick={() => toggleGroup(userId)} aria-expanded={isExpanded}>
+                    {isExpanded ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+                    {isExpanded ? "Tutup Email" : "Lihat Email"}
+                  </NeoButton>
+                </div>
+              </div>
+
+              {isExpanded ? (
+                <div className="border-t-[3px] border-ink bg-muted p-3">
+                  <div className="max-h-96 space-y-2 overflow-y-auto pr-1">
+                    {userRows.map((row, index) => (
+                      <label key={row.id} className="flex cursor-pointer items-start gap-3 rounded-md border-[3px] border-ink bg-card px-3 py-2 shadow-neo-sm">
+                        <input
+                          type="checkbox"
+                          checked={selected.includes(row.id)}
+                          onChange={() => toggleSelection([row.id])}
+                          className="mt-0.5 size-4 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="break-all font-mono text-sm font-bold">{index + 1}. {row.account_ref}</p>
+                          <p className="mt-1 text-[10px] font-bold uppercase text-muted-foreground">{fmtDate(row.created_at)}</p>
+                        </div>
+                        <NeoBadge tone={row.status === "ACCEPTED" ? "primary" : row.status === "PENDING" ? "warning" : "danger"}>{row.status}</NeoBadge>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </NeoCard>
           );
         })}
       </div>
-    </NeoCard>
+    </div>
   );
 }
 

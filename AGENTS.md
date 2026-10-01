@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Group admin submission records by user in the interface while preserving row-level selection, because high-volume users must remain compact without losing review precision.

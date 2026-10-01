@@ -15,7 +15,7 @@ import {
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getBootstrap } from "@/lib/account.functions";
-import { NeoBadge } from "@/components/neo";
+import { NeoBadge, NeoButton } from "@/components/neo";
 import { AnnouncementDialog } from "@/components/AnnouncementDialog";
 
 
@@ -96,12 +96,13 @@ export function AppShell({ children }: { children: ReactNode }) {
               </Link>
             ) : null}
           </nav>
-          <button
+          <NeoButton
             onClick={signOut}
-            className="neo-press mt-4 flex items-center justify-center gap-2 rounded-md border-[3px] border-ink bg-destructive px-3 py-2 font-display text-sm font-bold uppercase text-destructive-foreground shadow-neo-sm"
+            tone="danger"
+            className="mt-4"
           >
             <LogOut className="size-4" /> Keluar
-          </button>
+          </NeoButton>
         </aside>
 
         <main className="min-w-0 flex-1">
@@ -115,13 +116,15 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <NeoBadge tone="info">Admin</NeoBadge>
                 </Link>
               ) : null}
-              <button
+              <NeoButton
                 onClick={signOut}
-                className="neo-press rounded-md border-[3px] border-ink bg-destructive p-2 text-destructive-foreground shadow-neo-sm"
+                tone="danger"
+                size="sm"
+                className="size-9 p-0"
                 aria-label="Keluar"
               >
                 <LogOut className="size-4" />
-              </button>
+              </NeoButton>
             </div>
           </header>
 
@@ -132,6 +135,14 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {data.settings.announcement}
               </p>
             </div>
+          ) : null}
+
+          {data?.settings.announcement ? (
+            <AnnouncementDialog
+              title={data.settings.announcement_title}
+              body={data.settings.announcement}
+              rules={data.settings.rules_today}
+            />
           ) : null}
 
           {children}
